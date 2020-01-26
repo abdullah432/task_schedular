@@ -17,14 +17,24 @@ class NoteListState extends State<NoteList> {
   int count = 0;
   //date logic
   final now = DateTime.now();
-  DateTime tommoro;
+  DateTime todayDate;
+  DateTime tommoroDate;
   DateTime dayAfterTommoro;
+  //list of dates
+  List<DateTime> todayList = List();
+  List<DateTime> tommoroList = List();
+  List<DateTime> dayAfterTommoroList = List();
+  int todayCount = 0;
+  int tommoroCount = 0;
+  int dayAfterTommoroCount = 0;
 
   @override
   void initState() {
-    tommoro = DateTime(now.year, now.month, now.day + 1);
+    todayDate = DateTime(now.year, now.month, now.day);
+    tommoroDate = DateTime(now.year, now.month, now.day + 1);
     dayAfterTommoro = DateTime(now.year, now.month, now.day + 2);
-    debugPrint('tommoro: ' + tommoro.toString());
+    debugPrint('todayDate: ' + todayDate.toString());
+    debugPrint('tommoroDate: ' + tommoroDate.toString());
     debugPrint('dayAfterTommoro: ' + dayAfterTommoro.toString());
     super.initState();
   }
@@ -56,15 +66,15 @@ class NoteListState extends State<NoteList> {
       children: <Widget>[
         ListTile(
           title: Text('Today'),
-          trailing: Text('$count Tasks'),
+          trailing: Text('$todayCount Tasks'),
         ),
         ListTile(
           title: Text('Tomorrow'),
-          trailing: Text('0 Tasks'),
+          trailing: Text('$tommoroCount Tasks'),
         ),
         ListTile(
           title: Text('Next days'),
-          trailing: Text('0 Tasks'),
+          trailing: Text('$dayAfterTommoroCount Tasks'),
         ),
       ],
     );
@@ -126,16 +136,55 @@ class NoteListState extends State<NoteList> {
         setState(() {
           this.noteList = noteList;
           this.count = noteList.length;
-          arrangeDates();
+          if (noteList.isNotEmpty) arrangeDates();
         });
       });
     });
   }
 
   void arrangeDates() {
+    debugPrint('Length: ' + noteList.length.toString());
+    List<DateTime> between = List();
+
+    int count = 0;
     for (int i = 0; i < noteList.length; i++) {
-      debugPrint('start of dates $i: '+(noteList[i].startdate).toString());
-      debugPrint('end of dates $i: '+(noteList[i].enddate).toString());
+      // debugPrint('start of dates $i: '+(noteList[i].startdate).toString());
+      // debugPrint('end of dates $i: '+(noteList[i].enddate).toString());
+      // if (now.compareTo())
+      DateTime startDate = DateTime.parse(noteList[i].startdate);
+      DateTime endDate = DateTime.parse(noteList[i].enddate);
+      debugPrint('start dates $i: ' + (noteList[i].startdate).toString());
+      debugPrint('end dates $i: ' + (noteList[i].enddate).toString());
+      // for (DateTime start=startDate; start <= endDate; start.day+1){
+
+      // }
+      //get number of days between each task
+      final days = endDate.difference(startDate).inDays;
+      // debugPrint('Days: '+(days + 1).toString());
+
+      //all dates between startDate and endDate
+      for (int i = 0; i <= days + 1; i++) {
+        between
+            .add(DateTime(startDate.year, startDate.month, startDate.day + i));
+      }
+
+      for (var b in between) {
+        if (todayDate.compareTo(b) == 0) {
+          todayList.add(b);
+        } else if (tommoroDate.compareTo(b) == 0) {
+          tommoroList.add(b);
+        } else if (dayAfterTommoro.compareTo(b) == 0) {
+          dayAfterTommoroList.add(b);
+        }
+      }
+      between.clear();
     }
+
+    debugPrint('today List: '+todayList.toString());
+    debugPrint('tommoro List: '+tommoroList.toString());
+    debugPrint('dayAfterTommoro List: '+dayAfterTommoroList.toString());
+    todayCount = todayList.length;
+    tommoroCount = tommoroList.length;
+    dayAfterTommoroCount = dayAfterTommoroList.length;
   }
 }
