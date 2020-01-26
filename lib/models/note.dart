@@ -6,11 +6,13 @@ class Note {
   String _startdate;
   String _enddate;
   String _privacy;
+  String _starttime;
+  String _duetime;
 
   Note(this._title, this._startdate, this._enddate,
-      [this._location, this._description, this._privacy]);
+      [this._location, this._description, this._privacy, this._starttime, this._duetime]);
   Note.withID(this._title, this._startdate, this._enddate,
-      [this._location, this._description, this._privacy]);
+      [this._location, this._description, this._privacy, this._starttime, this._duetime]);
 
   int get id => this._id;
   String get title => this._title;
@@ -19,6 +21,8 @@ class Note {
   String get privacy => this._privacy;
   String get startdate => this._startdate;
   String get enddate => this._enddate;
+  String get starttime => this._starttime;
+  String get duetime => this._duetime;
 
   set title(String newTitle) {
     if (title.length <= 255) this._title = newTitle;
@@ -44,6 +48,14 @@ class Note {
     this._enddate = newEndDate;
   }
 
+  set setStartTime(String newtime) {
+    this._starttime = newtime;
+  }
+
+    set setDueTime(String newtime) {
+    this._duetime = newtime;
+  }
+
   //SQLFlite only get and return value in form of map
 
   //Convert Note object to Map object
@@ -57,6 +69,8 @@ class Note {
     map['privacy'] = _privacy;
     map['startdate'] = _startdate;
     map['enddate'] = _enddate;
+    map['starttime'] = _starttime;
+    map['duetime'] = _duetime;
 
     return map;
   }
@@ -70,5 +84,7 @@ class Note {
     _privacy = map['privacy'];
     _startdate = map['startdate'];
     _enddate = map['enddate'];
+    _starttime = map['starttime'];
+    _duetime = map['duetime'];
   }
 }

@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdf;
+import 'package:printing/printing.dart';
 import 'package:task_scheduler/models/note.dart';
 import 'package:task_scheduler/screens/note_list.dart';
 import 'package:task_scheduler/utils/database_helper.dart';
@@ -43,9 +46,20 @@ class NoteDetailState extends State<NoteDetail> {
   final now = DateTime.now();
   DateTime startDate = DateTime.now();
   DateTime endDate;
+  //time
+  String starttime = 'Not Set';
+  String duetime = 'Not Set';
+
+  TextStyle textStyle;
 
   TextEditingController locationController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
+  //dynamic textfield
+  List<TextEditingController> _highlightControllers;
+  TextEditingController _highlightController;
+  List<int> highlights;
+  int highlightCount = 1;
 
   @override
   void initState() {
@@ -53,7 +67,10 @@ class NoteDetailState extends State<NoteDetail> {
     debugPrint('tommoro' + endDate.toString());
     setPreviousValues();
     super.initState();
-    // selectedValue = dropDown[0];
+    highlights = new List<int>();
+    highlights.add(highlightCount);
+    _highlightControllers = new List<TextEditingController>();
+    _highlightController = new TextEditingController();
   }
 
   @override
@@ -65,7 +82,7 @@ class NoteDetailState extends State<NoteDetail> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.title;
+    textStyle = Theme.of(context).textTheme.subtitle;
 
     locationController.text = this.note.location;
     descriptionController.text = this.note.description;
@@ -95,84 +112,181 @@ class NoteDetailState extends State<NoteDetail> {
                   ),
                   subtitle: getTitleDropDown(),
                 ),
-                ListTile(
-                  title: Text(
-                    'START',
-                    style: textStyle,
-                  ),
-                  subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 7),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            formatDate(startDate, [dd, ' ', MM, ' ', yyyy]),
-                            style:
-                                TextStyle(fontSize: 17, color: Colors.black45),
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black45,
-                          )
-                        ],
-                      )),
-                  onTap: () {
-                    DatePicker.showDatePicker(context,
-                        showTitleActions: true,
-                        minTime: DateTime(2018, 1, 1),
-                        maxTime: DateTime(2199, 12, 31), onConfirm: (date) {
-                      setState(() {
-                        this.note.startDate = date.toString();
-                        startDate = date;
-                        debugPrint(
-                            'startdate' + date.toString().substring(0, 10));
-                        debugPrint('todaydate' +
-                            DateTime.now().toString().substring(0, 10));
-                      });
-                    }, currentTime: startDate, locale: LocaleType.en);
-                  },
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: ListTile(
+                      title: Text(
+                        'START',
+                        style: textStyle,
+                      ),
+                      subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 7),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(
+                                formatDate(startDate, [dd, ' ', MM, ' ', yyyy]),
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.black45),
+                              )),
+                              Expanded(
+                                  child: Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.black45,
+                              ))
+                            ],
+                          )),
+                      onTap: () {
+                        DatePicker.showDatePicker(context,
+                            showTitleActions: true,
+                            minTime: DateTime(2018, 1, 1),
+                            maxTime: DateTime(2199, 12, 31), onConfirm: (date) {
+                          setState(() {
+                            this.note.startDate = date.toString();
+                            startDate = date;
+                            debugPrint(
+                                'startdate' + date.toString().substring(0, 10));
+                            debugPrint('todaydate' +
+                                DateTime.now().toString().substring(0, 10));
+                          });
+                        }, currentTime: startDate, locale: LocaleType.en);
+                      },
+                    )),
+                    Expanded(
+                        child: ListTile(
+                      title: Text(
+                        'START TIME',
+                        style: textStyle,
+                      ),
+                      subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 7),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(
+                                starttime,
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.black45),
+                              )),
+                              Expanded(
+                                  child: Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.black45,
+                              ))
+                            ],
+                          )),
+                      onTap: () {
+                        DatePicker.showTimePicker(context,
+                            // theme: DatePickerTheme(
+                            //   containerHeight: 210.0,
+                            // ),
+                            showTitleActions: true, onConfirm: (time) {
+                          print('confirm $time');
+                          starttime =
+                              '${time.hour} : ${time.minute} : ${time.second}';
+                          setState(() {
+                            this.note.setStartTime = starttime;
+                          });
+                        }, currentTime: DateTime.now(), locale: LocaleType.en);
+                      },
+                    )),
+                  ],
                 ),
-                ListTile(
-                  title: Text(
-                    'DUE',
-                    style: textStyle,
-                  ),
-                  subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 7),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            formatDate(endDate, [dd, ' ', MM, ' ', yyyy]),
-                            style:
-                                TextStyle(fontSize: 17, color: Colors.black45),
+                Padding(
+                  padding: const EdgeInsets.only(top: 13),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ListTile(
+                          title: Text(
+                            'DUE DATE',
+                            style: textStyle,
                           ),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.black45,
-                          )
-                        ],
+                          subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 7),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Expanded(child: Text(
+                                    formatDate(endDate, [dd, ' ', MM, ' ', yyyy]),
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.black45),
+                                  )),
+                                  Expanded(child: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.black45,
+                                  ))
+                                ],
+                              )),
+                          onTap: () {
+                            DatePicker.showDatePicker(context,
+                                showTitleActions: true,
+                                minTime: DateTime(2019, 1, 1),
+                                maxTime: DateTime(2199, 12, 31),
+                                onConfirm: (date) {
+                              setState(() {
+                                this.note.endDate = date.toString();
+                                endDate = date;
+                                debugPrint('startdate' + date.toString());
+                                debugPrint(
+                                    'todaydate' + DateTime.now().toString());
+                              });
+                            }, currentTime: endDate, locale: LocaleType.en);
+                          },
+                        ),
+                      ),
+                      Expanded(
+                          child: ListTile(
+                        title: Text(
+                          'DUE TIME',
+                          style: textStyle,
+                        ),
+                        subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                    child: Text(
+                                  duetime,
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black45),
+                                )),
+                                Expanded(
+                                    child: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.black45,
+                                ))
+                              ],
+                            )),
+                        onTap: () {
+                          DatePicker.showTimePicker(context,
+                              showTitleActions: true, onConfirm: (time) {
+                            print('confirm $time');
+                            duetime =
+                                '${time.hour} : ${time.minute} : ${time.second}';
+                            setState(() {
+                              this.note.setDueTime = duetime;
+                              
+                            });
+                          }, currentTime: DateTime.now(), locale: LocaleType.en);
+                        },
                       )),
-                  onTap: () {
-                    DatePicker.showDatePicker(context,
-                        showTitleActions: true,
-                        minTime: DateTime(2019, 1, 1),
-                        maxTime: DateTime(2199, 12, 31), onConfirm: (date) {
-                      setState(() {
-                        this.note.endDate = date.toString();
-                        endDate = date;
-                        debugPrint('startdate' + date.toString());
-                        debugPrint('todaydate' + DateTime.now().toString());
-                      });
-                    }, currentTime: endDate, locale: LocaleType.en);
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Privacy',
-                    style: textStyle,
+                    ],
                   ),
-                  subtitle: getPrivacyDropDown(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: ListTile(
+                    title: Text(
+                      'Privacy',
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                    ),
+                    subtitle: getPrivacyDropDown(),
+                  ),
                 ),
                 Padding(
                     padding: EdgeInsets.only(
@@ -193,7 +307,7 @@ class NoteDetailState extends State<NoteDetail> {
                     )),
                 Padding(
                     padding: EdgeInsets.only(
-                        top: minimumPadding * 3, bottom: minimumPadding * 5),
+                        top: minimumPadding * 2, bottom: minimumPadding * 5),
                     child: TextField(
                       controller: descriptionController,
                       onChanged: (value) {
@@ -207,7 +321,54 @@ class NoteDetailState extends State<NoteDetail> {
                               borderRadius: BorderRadius.circular(5))),
                       style: textStyle,
                     )),
- 
+                // ListView.builder(
+                //     shrinkWrap: true,
+                //     physics: ClampingScrollPhysics(),
+                //     itemCount: highlights.length,
+                //     itemBuilder: (context, index) {
+                //       return _getHighlightItem(index);
+                //     }),
+                // Container(
+                //   child: new RaisedButton(
+                //     onPressed: () {
+                //       setState(() {
+                //         highlightCount++;
+                //         highlights.add(highlightCount);
+                //       });
+                //     },
+                //     color: Colors.blue,
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.start,
+                //       mainAxisSize: MainAxisSize.min,
+                //       children: <Widget>[
+                //         new Text(
+                //           'ADD',
+                //           style: new TextStyle(
+                //               color: Colors.white, fontSize: 16.0),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                Container(
+                  child: new RaisedButton(
+                    onPressed: () {
+                      setState(() {
+                        // debugPrint('clicked');
+                        Printing.layoutPdf(
+              onLayout: buildPdf,
+            );
+                      });
+                    },
+                    color: Colors.blue,
+                    child: new Text(
+                          'PRINT',
+                          style: new TextStyle(
+                              color: Colors.white, fontSize: 16.0),
+                        ),
+                    ),
+                  ),
+
                 Padding(
                   padding: EdgeInsets.only(top: minimumPadding * 2),
                   child: Row(
@@ -345,6 +506,8 @@ class NoteDetailState extends State<NoteDetail> {
     this.note.startDate = startDate.toString();
     this.note.endDate = endDate.toString();
     this.note.privacy = selectedPrivacy;
+    this.note.setStartTime = starttime;
+    this.note.setDueTime = duetime;
   }
 
   void setPreviousValues() {
@@ -353,6 +516,83 @@ class NoteDetailState extends State<NoteDetail> {
       endDate = DateTime.parse(note.enddate);
       selectedTitle = note.title;
       selectedPrivacy = note.privacy;
+      starttime = note.starttime;
+      duetime = note.duetime;
     }
+  }
+
+  _getHighlightItem(int index) {
+    highlightCount = highlights.elementAt(index);
+
+    return new Stack(
+      children: <Widget>[
+        Padding(
+            padding:
+                EdgeInsets.only(top: minimumPadding, bottom: minimumPadding),
+            child: TextField(
+              controller: _highlightController,
+              onChanged: (value) {
+                updateDescription();
+              },
+              decoration: InputDecoration(
+                  labelText: 'Attendance',
+                  labelStyle: textStyle,
+                  hintText: 'Enter Name',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5))),
+              style: textStyle,
+            )),
+        highlights.length > 1
+            ? new Positioned(
+                top: 10.0,
+                right: 0.0,
+                child: IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    setState(() {
+                      if (highlightCount > 0) {
+                        highlightCount--;
+                        highlights.removeAt(index);
+                      }
+                    });
+                  },
+                ),
+              )
+            : new Container(),
+      ],
+    );
+  }
+
+  //print
+  List<int> buildPdf(PdfPageFormat format) {
+    final pdf.Document doc = pdf.Document();
+
+    doc.addPage(
+      pdf.Page(
+        pageFormat: format,
+        build: (pdf.Context context) {
+          return pdf.ConstrainedBox(
+            constraints: const pdf.BoxConstraints.expand(),
+            child: pdf.Padding(padding: pdf.EdgeInsets.only(top: 20),child: pdf.Column(
+                children: <pdf.Widget>[
+                pdf.Row(children: <pdf.Widget>[
+                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text('Title', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
+                pdf.Expanded(flex: 4,child:pdf.Padding(child:  pdf.Text('Description', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 15, right: 10))),
+                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text('Timing', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
+                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text('RV', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 30, right: 20))),
+                ]),
+                pdf.Row(children: <pdf.Widget>[
+                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text(note.title, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
+                pdf.Expanded(flex: 4,child:pdf.Padding(child:  pdf.Text(note.description, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 15, right: 10))),
+                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text(note.starttime, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
+                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text(note.location, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 30, right: 20))),
+                ]),
+              ]),
+          ));
+        },
+      ),
+    );
+
+    return doc.save();
   }
 }

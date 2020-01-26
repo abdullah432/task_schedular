@@ -57,7 +57,7 @@ class NoteListState extends State<NoteList> {
         child: Icon(Icons.add),
         onPressed: () {
           debugPrint("Add");
-          navigateToDetail(Note('', '', '', '', '', ''), 'Add Task');
+          navigateToDetail(Note('', '', '', '', '', '', '', ''), 'Add Task');
         },
       ),
       appBar: AppBar(title: Text('Task Scheduler')),
@@ -87,7 +87,7 @@ class NoteListState extends State<NoteList> {
             NoteDetail(note, title),
       ),
     );
-    if (result) updateNoteList();
+    // if (result) updateNoteList();
   }
 
   void updateNoteList() {
