@@ -25,7 +25,7 @@ class Note {
   }
 
   set location(String newLocation) {
-    if (title.length <= 255) this._title = newLocation;
+    if (location.length <= 255) this._location = newLocation;
   }
 
   set description(String newDescription) {

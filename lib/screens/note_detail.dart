@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:task_scheduler/models/note.dart';
+import 'package:task_scheduler/screens/note_list.dart';
 import 'package:task_scheduler/utils/database_helper.dart';
 
 class NoteDetail extends StatefulWidget {
@@ -50,8 +51,16 @@ class NoteDetailState extends State<NoteDetail> {
   void initState() {
     endDate = new DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
     debugPrint('tommoro' + endDate.toString());
+    setPreviousValues();
     super.initState();
     // selectedValue = dropDown[0];
+  }
+
+  @override
+  void dispose() {
+    locationController.dispose();
+    descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -86,39 +95,6 @@ class NoteDetailState extends State<NoteDetail> {
                   ),
                   subtitle: getTitleDropDown(),
                 ),
-                Padding(
-                    padding: EdgeInsets.only(
-                            top: minimumPadding * 3, bottom: minimumPadding) *
-                        2,
-                    child: TextFormField(
-                      controller: locationController,
-                      onChanged: (value) {
-                        updateLocation();
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Location',
-                          labelStyle: textStyle,
-                          hintText: 'Enter Location',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5))),
-                      style: textStyle,
-                    )),
-                Padding(
-                    padding: EdgeInsets.only(
-                        top: minimumPadding * 3, bottom: minimumPadding * 5),
-                    child: TextField(
-                      controller: descriptionController,
-                      onChanged: (value) {
-                        updateDescription();
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Description',
-                          labelStyle: textStyle,
-                          hintText: 'Enter Description',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5))),
-                      style: textStyle,
-                    )),
                 ListTile(
                   title: Text(
                     'START',
@@ -199,6 +175,40 @@ class NoteDetailState extends State<NoteDetail> {
                   subtitle: getPrivacyDropDown(),
                 ),
                 Padding(
+                    padding: EdgeInsets.only(
+                            top: minimumPadding * 3, bottom: minimumPadding) *
+                        2,
+                    child: TextField(
+                      controller: locationController,
+                      onChanged: (value) {
+                        updateLocation();
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'RV',
+                          labelStyle: textStyle,
+                          hintText: 'Enter Location',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                      style: textStyle,
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(
+                        top: minimumPadding * 3, bottom: minimumPadding * 5),
+                    child: TextField(
+                      controller: descriptionController,
+                      onChanged: (value) {
+                        updateDescription();
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'Description',
+                          labelStyle: textStyle,
+                          hintText: 'Enter Description',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                      style: textStyle,
+                    )),
+ 
+                Padding(
                   padding: EdgeInsets.only(top: minimumPadding * 2),
                   child: Row(
                     children: <Widget>[
@@ -257,7 +267,7 @@ class NoteDetailState extends State<NoteDetail> {
       result = await databaseHelper.updateTask(note);
     }
 
-     moveToLastScreen();
+    moveToLastScreen();
 
     if (result != 0) {
       showAlertDialog('Status', 'Task Saved Successfully');
@@ -284,7 +294,10 @@ class NoteDetailState extends State<NoteDetail> {
   }
 
   void moveToLastScreen() {
-    Navigator.pop(context, true);
+    // Navigator.pop(context, true);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return NoteList();
+    }));
   }
 
   getTitleDropDown() {
@@ -323,14 +336,23 @@ class NoteDetailState extends State<NoteDetail> {
     );
   }
 
-   //assign dropdown and date values because may be user leave it default
+  //assign dropdown and date values because may be user leave it default
   void assignDefaultValues() {
-    debugPrint('title: '+selectedTitle);
-    debugPrint('start: '+startDate.toString());
-    debugPrint('end: '+endDate.toString());
+    debugPrint('title: ' + selectedTitle);
+    debugPrint('start: ' + startDate.toString());
+    debugPrint('end: ' + endDate.toString());
     this.note.title = selectedTitle;
     this.note.startDate = startDate.toString();
     this.note.endDate = endDate.toString();
     this.note.privacy = selectedPrivacy;
+  }
+
+  void setPreviousValues() {
+    if (note.startdate.isNotEmpty) {
+      startDate = DateTime.parse(note.startdate);
+      endDate = DateTime.parse(note.enddate);
+      selectedTitle = note.title;
+      selectedPrivacy = note.privacy;
+    }
   }
 }
