@@ -54,6 +54,7 @@ class NoteDetailState extends State<NoteDetail> {
 
   TextEditingController locationController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  TextEditingController attendenceController = TextEditingController();
 
   //dynamic textfield
   List<TextEditingController> _highlightControllers;
@@ -77,6 +78,7 @@ class NoteDetailState extends State<NoteDetail> {
   void dispose() {
     locationController.dispose();
     descriptionController.dispose();
+    attendenceController.dispose();
     super.dispose();
   }
 
@@ -86,6 +88,7 @@ class NoteDetailState extends State<NoteDetail> {
 
     locationController.text = this.note.location;
     descriptionController.text = this.note.description;
+    attendenceController.text = this.note.attendence;
 
     return WillPopScope(
         onWillPop: () {
@@ -112,6 +115,55 @@ class NoteDetailState extends State<NoteDetail> {
                   ),
                   subtitle: getTitleDropDown(),
                 ),
+                Padding(
+                    padding: EdgeInsets.only(
+                            top: minimumPadding, bottom: minimumPadding) *
+                        2,
+                    child: TextField(
+                      controller: locationController,
+                      onChanged: (value) {
+                        updateLocation();
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'RV',
+                          labelStyle: textStyle,
+                          hintText: 'Enter Location',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                      style: textStyle,
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(
+                        top: minimumPadding * 2, bottom: minimumPadding * 5),
+                    child: TextField(
+                      controller: descriptionController,
+                      onChanged: (value) {
+                        updateDescription();
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'Description',
+                          labelStyle: textStyle,
+                          hintText: 'Enter Description',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                      style: textStyle,
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(bottom: minimumPadding * 5),
+                    child: TextField(
+                      controller: attendenceController,
+                      onChanged: (value) {
+                        updateAttendence();
+                      },
+                      decoration: InputDecoration(
+                          labelText: 'Attendance',
+                          labelStyle: textStyle,
+                          hintText: 'Enter Names',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                      style: textStyle,
+                    )),
+
                 Row(
                   children: <Widget>[
                     Expanded(
@@ -186,7 +238,7 @@ class NoteDetailState extends State<NoteDetail> {
                             showTitleActions: true, onConfirm: (time) {
                           print('confirm $time');
                           starttime =
-                              '${time.hour} : ${time.minute} : ${time.second}';
+                              '${time.hour}:${time.minute}';
                           setState(() {
                             this.note.setStartTime = starttime;
                           });
@@ -208,14 +260,18 @@ class NoteDetailState extends State<NoteDetail> {
                           subtitle: Padding(
                               padding: const EdgeInsets.only(top: 7),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Expanded(child: Text(
-                                    formatDate(endDate, [dd, ' ', MM, ' ', yyyy]),
+                                  Expanded(
+                                      child: Text(
+                                    formatDate(
+                                        endDate, [dd, ' ', MM, ' ', yyyy]),
                                     style: TextStyle(
                                         fontSize: 17, color: Colors.black45),
                                   )),
-                                  Expanded(child: Icon(
+                                  Expanded(
+                                      child: Icon(
                                     Icons.arrow_drop_down,
                                     color: Colors.black45,
                                   ))
@@ -267,12 +323,13 @@ class NoteDetailState extends State<NoteDetail> {
                               showTitleActions: true, onConfirm: (time) {
                             print('confirm $time');
                             duetime =
-                                '${time.hour} : ${time.minute} : ${time.second}';
+                                '${time.hour}:${time.minute}';
                             setState(() {
                               this.note.setDueTime = duetime;
-                              
                             });
-                          }, currentTime: DateTime.now(), locale: LocaleType.en);
+                          },
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.en);
                         },
                       )),
                     ],
@@ -283,44 +340,12 @@ class NoteDetailState extends State<NoteDetail> {
                   child: ListTile(
                     title: Text(
                       'Privacy',
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                     ),
                     subtitle: getPrivacyDropDown(),
                   ),
                 ),
-                Padding(
-                    padding: EdgeInsets.only(
-                            top: minimumPadding * 3, bottom: minimumPadding) *
-                        2,
-                    child: TextField(
-                      controller: locationController,
-                      onChanged: (value) {
-                        updateLocation();
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'RV',
-                          labelStyle: textStyle,
-                          hintText: 'Enter Location',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5))),
-                      style: textStyle,
-                    )),
-                Padding(
-                    padding: EdgeInsets.only(
-                        top: minimumPadding * 2, bottom: minimumPadding * 5),
-                    child: TextField(
-                      controller: descriptionController,
-                      onChanged: (value) {
-                        updateDescription();
-                      },
-                      decoration: InputDecoration(
-                          labelText: 'Description',
-                          labelStyle: textStyle,
-                          hintText: 'Enter Description',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5))),
-                      style: textStyle,
-                    )),
                 // ListView.builder(
                 //     shrinkWrap: true,
                 //     physics: ClampingScrollPhysics(),
@@ -350,24 +375,24 @@ class NoteDetailState extends State<NoteDetail> {
                 //     ),
                 //   ),
                 // ),
-                Container(
-                  child: new RaisedButton(
-                    onPressed: () {
-                      setState(() {
-                        // debugPrint('clicked');
-                        Printing.layoutPdf(
-              onLayout: buildPdf,
-            );
-                      });
-                    },
-                    color: Colors.blue,
-                    child: new Text(
-                          'PRINT',
-                          style: new TextStyle(
-                              color: Colors.white, fontSize: 16.0),
-                        ),
-                    ),
-                  ),
+                //     Container(
+                //       child: new RaisedButton(
+                //         onPressed: () {
+                //           setState(() {
+                //             // debugPrint('clicked');
+                //             Printing.layoutPdf(
+                //   onLayout: buildPdf,
+                // );
+                //           });
+                //         },
+                //         color: Colors.blue,
+                //         child: new Text(
+                //               'PRINT',
+                //               style: new TextStyle(
+                //                   color: Colors.white, fontSize: 16.0),
+                //             ),
+                //         ),
+                //       ),
 
                 Padding(
                   padding: EdgeInsets.only(top: minimumPadding * 2),
@@ -409,6 +434,10 @@ class NoteDetailState extends State<NoteDetail> {
 
   void updateDescription() {
     this.note.description = descriptionController.text;
+  }
+
+  void updateAttendence() {
+    this.note.setAttendence = attendenceController.text;
   }
 
   void saveButton() async {
@@ -567,32 +596,63 @@ class NoteDetailState extends State<NoteDetail> {
   List<int> buildPdf(PdfPageFormat format) {
     final pdf.Document doc = pdf.Document();
 
-    doc.addPage(
-      pdf.Page(
+    doc.addPage(pdf.Page(
         pageFormat: format,
         build: (pdf.Context context) {
-          return pdf.ConstrainedBox(
-            constraints: const pdf.BoxConstraints.expand(),
-            child: pdf.Padding(padding: pdf.EdgeInsets.only(top: 20),child: pdf.Column(
-                children: <pdf.Widget>[
-                pdf.Row(children: <pdf.Widget>[
-                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text('Title', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
-                pdf.Expanded(flex: 4,child:pdf.Padding(child:  pdf.Text('Description', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 15, right: 10))),
-                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text('Timing', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
-                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text('RV', style: pdf.TextStyle(fontSize: 35)), padding: pdf.EdgeInsets.only(left: 30, right: 20))),
-                ]),
-                pdf.Row(children: <pdf.Widget>[
-                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text(note.title, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
-                pdf.Expanded(flex: 4,child:pdf.Padding(child:  pdf.Text(note.description, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 15, right: 10))),
-                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text(note.starttime, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 10, right: 20))),
-                pdf.Expanded(flex: 2,child:pdf.Padding(child:  pdf.Text(note.location, style: pdf.TextStyle(fontSize: 20)), padding: pdf.EdgeInsets.only(left: 30, right: 20))),
-                ]),
-              ]),
-          ));
-        },
-      ),
-    );
-
+          return pdf.Column(children: <pdf.Widget>[
+            pdf.Padding(
+                padding: pdf.EdgeInsets.all(10),
+                child: pdf.Align(
+                    alignment: pdf.Alignment.topLeft,
+                    child: pdf.Container(
+                        child: pdf.Text('Date',
+                            style: pdf.TextStyle(fontSize: 30))))),
+            pdf.Expanded(
+                child: pdf.Container(
+              padding: pdf.EdgeInsets.all(10),
+              margin: pdf.EdgeInsets.all(10),
+              decoration: pdf.BoxDecoration(
+                  border: pdf.BoxBorder(
+                      top: true,
+                      bottom: true,
+                      left: true,
+                      right: true,
+                      color: PdfColors.black,
+                      width: 5.0)),
+              child: pdf.Align(
+                  alignment: pdf.Alignment.topCenter,
+                  child: pdf.Table(border: pdf.TableBorder(), children: [
+                    pdf.TableRow(children: [
+                      pdf.Expanded(
+                          flex: 2,
+                          child: pdf.Padding(
+                              child: pdf.Text('Title',
+                                  style: pdf.TextStyle(fontSize: 22)),
+                              padding:
+                                  pdf.EdgeInsets.only(left: 10, right: 5))),
+                      pdf.Expanded(
+                          flex: 4,
+                          child: pdf.Padding(
+                              child: pdf.Text('Description',
+                                  style: pdf.TextStyle(fontSize: 22)),
+                              padding: pdf.EdgeInsets.only(left: 5, right: 5))),
+                      pdf.Expanded(
+                          flex: 2,
+                          child: pdf.Padding(
+                              child: pdf.Text('Timing',
+                                  style: pdf.TextStyle(fontSize: 22)),
+                              padding: pdf.EdgeInsets.only(left: 5, right: 5))),
+                      pdf.Expanded(
+                          flex: 2,
+                          child: pdf.Padding(
+                              child: pdf.Text('RV',
+                                  style: pdf.TextStyle(fontSize: 22)),
+                              padding: pdf.EdgeInsets.only(left: 5, right: 5))),
+                    ])
+                  ])),
+            ))
+          ]);
+        }));
     return doc.save();
   }
 }

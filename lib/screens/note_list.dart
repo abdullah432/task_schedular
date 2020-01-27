@@ -162,13 +162,13 @@ class NoteListState extends State<NoteList> {
     List<MyTask> nextDaysubList = List();
 
     if (todayCount == 0) {
-      data.add(new MyTask('Today', todayCount.toString()));
+      data.add(new MyTask('Today', todayCount.toString(), null));
     } else {
       for (int i = 0; i < todayCount; i++) {
         todaysubList.add(
             MyTask(todayList[i].title, todayList[i].description, todayList[i]));
       }
-      data.add(new MyTask('Today', todayCount.toString(), null, todaysubList));
+      data.add(new MyTask('Today', todayCount.toString(), null,todayList,null,null, todaysubList));
       // subList.clear();
     }
 
@@ -180,7 +180,7 @@ class NoteListState extends State<NoteList> {
             tommoroList[i].title, tommoroList[i].description, tommoroList[i]));
       }
       data.add(new MyTask(
-          'Tomorrow', tommoroCount.toString(), null, tommorowsubList));
+          'Tomorrow', tommoroCount.toString(), null,null,tommoroList,null, tommorowsubList));
       // subList.clear();
     }
 
@@ -192,7 +192,7 @@ class NoteListState extends State<NoteList> {
             dayAfterTommoroList[i].description, dayAfterTommoroList[i]));
       }
       data.add(new MyTask(
-          'Next Day', dayAfterTommoroCount.toString(), null, nextDaysubList));
+          'Next Day', dayAfterTommoroCount.toString(), null,null,null,dayAfterTommoroList, nextDaysubList));
       // subList.clear();
     }
 

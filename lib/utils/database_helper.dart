@@ -19,6 +19,7 @@ class DatabaseHelper {
   String colEndDate = 'enddate';
   String colStartTime = 'starttime';
   String colEndTime = 'duetime';
+  String colAttendence = 'attendence';
 
   factory DatabaseHelper() {
     if (databaseHelper == null) {
@@ -44,7 +45,7 @@ class DatabaseHelper {
   void createDb(Database db, int newVersion) async {
     await db.execute(
         'CREATE TABLE $noteTable($colId INTEGER PRIMARY KEY AUTOINCREMENT,'
-        '$colTitle TEXT, $colLocation Text, $colDescription Text, $colPrivacy Text, $colStartDate TEXT, $colEndDate TEXT, $colStartTime TEXT, $colEndTime TEXT)');
+        '$colTitle TEXT, $colLocation Text, $colDescription Text, $colPrivacy Text, $colStartDate TEXT, $colEndDate TEXT, $colStartTime TEXT, $colEndTime TEXT, $colAttendence TEXT)');
   }
 
   Future<Database> get database async {
