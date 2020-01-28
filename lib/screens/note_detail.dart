@@ -2,12 +2,8 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pdf;
-import 'package:printing/printing.dart';
 import 'package:task_scheduler/models/note.dart';
-import 'package:task_scheduler/screens/note_list.dart';
+import 'package:task_scheduler/screens/home.dart';
 import 'package:task_scheduler/utils/database_helper.dart';
 
 class NoteDetail extends StatefulWidget {
@@ -39,6 +35,9 @@ class NoteDetailState extends State<NoteDetail> {
   //privacy dropdown
   var privacyDropDown = ['Public', 'Private', 'Confidential'];
   String selectedPrivacy = 'Public';
+  String attendence = '';
+  String location = '';
+  String description = '';
 
   var minimumPadding = 5.0;
   DatabaseHelper databaseHelper = DatabaseHelper();
@@ -64,8 +63,9 @@ class NoteDetailState extends State<NoteDetail> {
 
   @override
   void initState() {
-    endDate = new DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
-    debugPrint('tommoro' + endDate.toString());
+    endDate = new DateTime(now.year, now.month, now.day, 0, 0, 0);
+    starttime = '${now.hour}:${now.minute}';
+    duetime = '${now.hour}:${now.minute}';
     setPreviousValues();
     super.initState();
     highlights = new List<int>();
@@ -198,6 +198,7 @@ class NoteDetailState extends State<NoteDetail> {
                           setState(() {
                             this.note.startDate = date.toString();
                             startDate = date;
+                            endDate = date;
                             debugPrint(
                                 'startdate' + date.toString().substring(0, 10));
                             debugPrint('todaydate' +
@@ -231,7 +232,8 @@ class NoteDetailState extends State<NoteDetail> {
                             ],
                           )),
                       onTap: () {
-                        DatePicker.showTimePicker(context,
+                        DatePicker.showTimePicker(
+                          context,
                             // theme: DatePickerTheme(
                             //   containerHeight: 210.0,
                             // ),
@@ -239,8 +241,11 @@ class NoteDetailState extends State<NoteDetail> {
                           print('confirm $time');
                           starttime =
                               '${time.hour}:${time.minute}';
+                          duetime =
+                              '${time.hour}:${time.minute}';
                           setState(() {
                             this.note.setStartTime = starttime;
+                            this.note.setDueTime = duetime;
                           });
                         }, currentTime: DateTime.now(), locale: LocaleType.en);
                       },
@@ -330,6 +335,8 @@ class NoteDetailState extends State<NoteDetail> {
                           },
                               currentTime: DateTime.now(),
                               locale: LocaleType.en);
+                          // selectTime(context);
+                          
                         },
                       )),
                     ],
@@ -441,8 +448,30 @@ class NoteDetailState extends State<NoteDetail> {
   }
 
   void saveButton() async {
+
     //assign dropdown and date values because may be user leave it default
     assignDefaultValues();
+    //check if textfield is null then assign at null
+    // if (attendenceController.text == ''){
+    //   this.note.setAttendence = 'null';
+    // }
+    // if (descriptionController.text == ''){
+    //   this.note.description = 'null';
+    // }
+    if (locationController.text == ''){
+      this.note.location = '.......';
+    }
+
+    // debugPrint('save');
+    // debugPrint(note.title);
+    // debugPrint(note.description);
+    // debugPrint(note.attendence);
+    // debugPrint(note.startdate);
+    // debugPrint(note.enddate);
+    // debugPrint(note.starttime);
+    // debugPrint(note.duetime);
+    // debugPrint(note.privacy);
+    // debugPrint('after save');
 
     int result;
     //   note.date = DateFormat.yMMMd().format(DateTime.now());
@@ -486,7 +515,7 @@ class NoteDetailState extends State<NoteDetail> {
   void moveToLastScreen() {
     // Navigator.pop(context, true);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return NoteList();
+      return TabBarPage();
     }));
   }
 
@@ -537,6 +566,7 @@ class NoteDetailState extends State<NoteDetail> {
     this.note.privacy = selectedPrivacy;
     this.note.setStartTime = starttime;
     this.note.setDueTime = duetime;
+    
   }
 
   void setPreviousValues() {
@@ -592,67 +622,15 @@ class NoteDetailState extends State<NoteDetail> {
     );
   }
 
-  //print
-  List<int> buildPdf(PdfPageFormat format) {
-    final pdf.Document doc = pdf.Document();
+  // TimeOfDay time = TimeOfDay.now();
+  // TimeOfDay picked;
+  // Future<Null> selectTime(BuildContext context) async{
+  //   picked = await showTimePicker(context: context, initialTime:  time);
 
-    doc.addPage(pdf.Page(
-        pageFormat: format,
-        build: (pdf.Context context) {
-          return pdf.Column(children: <pdf.Widget>[
-            pdf.Padding(
-                padding: pdf.EdgeInsets.all(10),
-                child: pdf.Align(
-                    alignment: pdf.Alignment.topLeft,
-                    child: pdf.Container(
-                        child: pdf.Text('Date',
-                            style: pdf.TextStyle(fontSize: 30))))),
-            pdf.Expanded(
-                child: pdf.Container(
-              padding: pdf.EdgeInsets.all(10),
-              margin: pdf.EdgeInsets.all(10),
-              decoration: pdf.BoxDecoration(
-                  border: pdf.BoxBorder(
-                      top: true,
-                      bottom: true,
-                      left: true,
-                      right: true,
-                      color: PdfColors.black,
-                      width: 5.0)),
-              child: pdf.Align(
-                  alignment: pdf.Alignment.topCenter,
-                  child: pdf.Table(border: pdf.TableBorder(), children: [
-                    pdf.TableRow(children: [
-                      pdf.Expanded(
-                          flex: 2,
-                          child: pdf.Padding(
-                              child: pdf.Text('Title',
-                                  style: pdf.TextStyle(fontSize: 22)),
-                              padding:
-                                  pdf.EdgeInsets.only(left: 10, right: 5))),
-                      pdf.Expanded(
-                          flex: 4,
-                          child: pdf.Padding(
-                              child: pdf.Text('Description',
-                                  style: pdf.TextStyle(fontSize: 22)),
-                              padding: pdf.EdgeInsets.only(left: 5, right: 5))),
-                      pdf.Expanded(
-                          flex: 2,
-                          child: pdf.Padding(
-                              child: pdf.Text('Timing',
-                                  style: pdf.TextStyle(fontSize: 22)),
-                              padding: pdf.EdgeInsets.only(left: 5, right: 5))),
-                      pdf.Expanded(
-                          flex: 2,
-                          child: pdf.Padding(
-                              child: pdf.Text('RV',
-                                  style: pdf.TextStyle(fontSize: 22)),
-                              padding: pdf.EdgeInsets.only(left: 5, right: 5))),
-                    ])
-                  ])),
-            ))
-          ]);
-        }));
-    return doc.save();
+  //   setState(() {
+  //     time = picked;
+  //     // debugPrint('time: '+formatDate(time, [dd,]);
+  //   });
+  // }
+
   }
-}

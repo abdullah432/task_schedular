@@ -22,22 +22,27 @@ class NoteListState extends State<NoteList> {
   DateTime todayDate;
   DateTime tommoroDate;
   DateTime dayAfterTommoro;
+  DateTime weeklyDate;
+  DateTime monthDate;
   //list of dates
   List<Note> todayList = List();
   List<Note> tommoroList = List();
   List<Note> dayAfterTommoroList = List();
+  List<Note> weeklyList = List();
+  List<Note> monthList = List();
   int todayCount = 0;
   int tommoroCount = 0;
   int dayAfterTommoroCount = 0;
+  int weeklyCount = 0;
+  int monthlyCount = 0;
 
   @override
   void initState() {
     todayDate = DateTime(now.year, now.month, now.day);
     tommoroDate = DateTime(now.year, now.month, now.day + 1);
     dayAfterTommoro = DateTime(now.year, now.month, now.day + 2);
-    debugPrint('todayDate: ' + todayDate.toString());
-    debugPrint('tommoroDate: ' + tommoroDate.toString());
-    debugPrint('dayAfterTommoro: ' + dayAfterTommoro.toString());
+    weeklyDate = DateTime(now.year, now.month, now.day + 7);
+    monthDate = DateTime(now.year, now.month, now.day + 30);
     super.initState();
   }
 
@@ -52,15 +57,30 @@ class NoteListState extends State<NoteList> {
     }
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'AddNote',
-        child: Icon(Icons.add),
-        onPressed: () {
-          debugPrint("Add");
-          navigateToDetail(Note('', '', '', '', '', '', '', ''), 'Add Task');
-        },
+      floatingActionButton: Container(
+        height: 60.0,
+        width: 60.0,
+        child: FittedBox(
+          child: FloatingActionButton(
+              tooltip: 'AddNote',
+              child: Icon(
+                Icons.add,
+                size: 30,
+              ),
+              onPressed: () {
+                navigateToDetail(
+                    Note('', '', '', '', '', '', '', '', ''), 'Add Task');
+              }),
+        ),
       ),
-      appBar: AppBar(title: Text('Task Scheduler')),
+      // FloatingActionButton(
+      //   tooltip: 'AddNote',
+      //   child: Icon(Icons.add,),
+      //   onPressed: () {
+      //     debugPrint("Add");
+      //     navigateToDetail(Note('', '', '', '', '', '', '', ''), 'Add Task');
+      //   },
+      // ),
       body: getNoteList(),
     );
   }
@@ -116,30 +136,38 @@ class NoteListState extends State<NoteList> {
       // if (now.compareTo())
       DateTime startDate = DateTime.parse(noteList[i].startdate);
       DateTime endDate = DateTime.parse(noteList[i].enddate);
-      debugPrint('start dates $i: ' + (noteList[i].startdate).toString());
-      debugPrint('end dates $i: ' + (noteList[i].enddate).toString());
+      // debugPrint('start dates $i: ' + (noteList[i].startdate).toString());
+      // debugPrint('end dates $i: ' + (noteList[i].enddate).toString());
       // for (DateTime start=startDate; start <= endDate; start.day+1){
 
       // }
       //get number of days between each task
       final days = endDate.difference(startDate).inDays;
       // debugPrint('Days: '+(days + 1).toString());
-      debugPrint('days'+days.toString());
+      debugPrint('days' + days.toString());
       //all dates between startDate and endDate
       for (int i = 0; i <= days; i++) {
         between
             .add(DateTime(startDate.year, startDate.month, startDate.day + i));
+        debugPrint('Date: ' + between[i].toString());
       }
 
       for (var b in between) {
+        // debugPrint('b: '+b.toString());
+        // debugPrint('nextday: '+dayAfterTommoro.toString());
         if (todayDate.compareTo(b) == 0) {
           todayList.add(noteList[i]);
         } else if (tommoroDate.compareTo(b) == 0) {
           tommoroList.add(noteList[i]);
-          debugPrint('tommorodate: '+tommoroDate.toString());
-          debugPrint('bdate: '+tommoroDate.toString());
+          // debugPrint('tommorodate: ' + tommoroDate.toString());
+          // debugPrint('bdate: ' + tommoroDate.toString());
         } else if (dayAfterTommoro.compareTo(b) == 0) {
           dayAfterTommoroList.add(noteList[i]);
+        } else if (weeklyDate.compareTo(b) == 0) {
+          weeklyList.add(noteList[i]);
+        }
+        else if (monthDate.compareTo(b) == 0) {
+          monthList.add(noteList[i]);
         }
       }
       between.clear();
@@ -151,6 +179,8 @@ class NoteListState extends State<NoteList> {
     todayCount = todayList.length;
     tommoroCount = tommoroList.length;
     dayAfterTommoroCount = dayAfterTommoroList.length;
+    weeklyCount = weeklyList.length;
+    monthlyCount = monthList.length;
 
     // assign data to expandable list
     assignDataToExpandable();
@@ -160,6 +190,8 @@ class NoteListState extends State<NoteList> {
     List<MyTask> todaysubList = List();
     List<MyTask> tommorowsubList = List();
     List<MyTask> nextDaysubList = List();
+    List<MyTask> weekDaysubList = List();
+    List<MyTask> monthDaysubList = List();
 
     if (todayCount == 0) {
       data.add(new MyTask('Today', todayCount.toString(), null));
@@ -168,7 +200,8 @@ class NoteListState extends State<NoteList> {
         todaysubList.add(
             MyTask(todayList[i].title, todayList[i].description, todayList[i]));
       }
-      data.add(new MyTask('Today', todayCount.toString(), null,todayList,null,null, todaysubList));
+      data.add(new MyTask('Today', todayCount.toString(), null, todayList, null,
+          null, todaysubList));
       // subList.clear();
     }
 
@@ -179,8 +212,8 @@ class NoteListState extends State<NoteList> {
         tommorowsubList.add(MyTask(
             tommoroList[i].title, tommoroList[i].description, tommoroList[i]));
       }
-      data.add(new MyTask(
-          'Tomorrow', tommoroCount.toString(), null,null,tommoroList,null, tommorowsubList));
+      data.add(new MyTask('Tomorrow', tommoroCount.toString(), null, null,
+          tommoroList, null, tommorowsubList));
       // subList.clear();
     }
 
@@ -191,8 +224,32 @@ class NoteListState extends State<NoteList> {
         nextDaysubList.add(MyTask(dayAfterTommoroList[i].title,
             dayAfterTommoroList[i].description, dayAfterTommoroList[i]));
       }
-      data.add(new MyTask(
-          'Next Day', dayAfterTommoroCount.toString(), null,null,null,dayAfterTommoroList, nextDaysubList));
+      data.add(new MyTask('Next Day', dayAfterTommoroCount.toString(), null,
+          null, null, dayAfterTommoroList, nextDaysubList));
+      // subList.clear();
+    }
+
+    if (weeklyCount == 0) {
+      data.add(new MyTask('Weekly', weeklyCount.toString()));
+    } else {
+      for (int i = 0; i < weeklyCount; i++) {
+        weekDaysubList.add(MyTask(
+            weeklyList[i].title, weeklyList[i].description, weeklyList[i]));
+      }
+      data.add(new MyTask('Weekly', weeklyCount.toString(), null, null, null,
+          weeklyList, weekDaysubList));
+      // subList.clear();
+    }
+
+        if (monthlyCount == 0) {
+      data.add(new MyTask('Monthly', monthlyCount.toString()));
+    } else {
+      for (int i = 0; i < monthlyCount; i++) {
+        monthDaysubList.add(MyTask(
+            monthList[i].title, monthList[i].description, monthList[i]));
+      }
+      data.add(new MyTask('Weekly', monthlyCount.toString(), null, null, null,
+          weeklyList, monthDaysubList));
       // subList.clear();
     }
 

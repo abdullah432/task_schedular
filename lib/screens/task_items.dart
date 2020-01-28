@@ -190,7 +190,7 @@ class TaskItemState extends State<TaskItem> {
                                   style: pdf.TextStyle(
                                       fontSize: 22,
                                       fontWeight: pdf.FontWeight.bold))))),
-                  padding: pdf.EdgeInsets.only(left: 20, right: 20,top: 10))),
+                  padding: pdf.EdgeInsets.only(left: 33, right: 33,top: 15))),
           pdf.Expanded(
               flex: 2,
               child: pdf.Padding(
@@ -216,7 +216,7 @@ class TaskItemState extends State<TaskItem> {
                                   style: pdf.TextStyle(
                                       fontSize: 22,
                                       fontWeight: pdf.FontWeight.bold))))),
-                  padding: pdf.EdgeInsets.only(left: 15, right: 15,top: 15, bottom: 15))),
+                  padding: pdf.EdgeInsets.only(left: 17, right: 17,top: 17, bottom: 17))),
         ]),
       ]),
       pdf.Table(border: pdf.TableBorder(), children: [

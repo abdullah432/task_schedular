@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_scheduler/screens/home.dart';
 import 'package:task_scheduler/screens/note_list.dart';
 
 void main() => runApp(MyApp());
@@ -9,11 +10,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'NoteKeeper',
+      title: 'TaskSchedular',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: NoteList(),
+      home: TabBarPage(),
     );
   }
 }
