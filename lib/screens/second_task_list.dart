@@ -2,7 +2,6 @@
 // with an ExpansionTile.
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_scheduler/models/SeondTask.dart';
 import 'package:task_scheduler/models/note.dart';
 import 'package:task_scheduler/screens/note_detail.dart';

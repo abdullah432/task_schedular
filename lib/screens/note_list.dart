@@ -35,6 +35,8 @@ class NoteListState extends State<NoteList> {
   int dayAfterTommoroCount = 0;
   int weeklyCount = 0;
   int monthlyCount = 0;
+  //no of days in month
+  DateTime noOfDays;
 
   @override
   void initState() {
@@ -42,7 +44,8 @@ class NoteListState extends State<NoteList> {
     tommoroDate = DateTime(now.year, now.month, now.day + 1);
     dayAfterTommoro = DateTime(now.year, now.month, now.day + 2);
     weeklyDate = DateTime(now.year, now.month, now.day + 7);
-    monthDate = DateTime(now.year, now.month, now.day + 30);
+    monthDate = DateTime(now.year, now.month + 1, now.day + 30);
+    debugPrint('lastdateofmonth: '+monthDate.toString());
     super.initState();
   }
 
@@ -145,7 +148,7 @@ class NoteListState extends State<NoteList> {
       //first check startdate and enddate is same or not, if same then add to today list
       debugPrint('todayDAte: '+startDate.toString());
       debugPrint('todayDAte: '+endDate.toString());
-      DateTime s = DateTime(startDate.year, startDate.month, startDate.day);
+      DateTime s = DateTime(now.year, now.month, now.day);
       DateTime e = DateTime(endDate.year, endDate.month, endDate.day);
       if (s.compareTo(e) == 0) {
         todayList.add(noteList[i]);
@@ -155,7 +158,7 @@ class NoteListState extends State<NoteList> {
         //get number of days between each task
         final days = endDate.difference(startDate).inDays;
         // debugPrint('Days: '+(days + 1).toString());
-        // debugPrint('days' + days.toString());
+        debugPrint('days' + days.toString());
         //all dates between startDate and endDate
         for (int i = 0; i <= days + 1; i++) {
           between.add(
@@ -212,7 +215,7 @@ class NoteListState extends State<NoteList> {
             MyTask(todayList[i].title, todayList[i].description, todayList[i]));
       }
       data.add(new MyTask('Today', todayCount.toString(), null, todayList, null,
-          null, todaysubList));
+          null,null,null, todaysubList));
       // subList.clear();
     }
 
@@ -224,7 +227,7 @@ class NoteListState extends State<NoteList> {
             tommoroList[i].title, tommoroList[i].description, tommoroList[i]));
       }
       data.add(new MyTask('Tomorrow', tommoroCount.toString(), null, null,
-          tommoroList, null, tommorowsubList));
+          tommoroList, null,null,null, tommorowsubList));
       // subList.clear();
     }
 
@@ -236,7 +239,7 @@ class NoteListState extends State<NoteList> {
             dayAfterTommoroList[i].description, dayAfterTommoroList[i]));
       }
       data.add(new MyTask('Next Day', dayAfterTommoroCount.toString(), null,
-          null, null, dayAfterTommoroList, nextDaysubList));
+          null, null,dayAfterTommoroList,null, null, nextDaysubList));
       // subList.clear();
     }
 
@@ -247,8 +250,8 @@ class NoteListState extends State<NoteList> {
         weekDaysubList.add(MyTask(
             weeklyList[i].title, weeklyList[i].description, weeklyList[i]));
       }
-      data.add(new MyTask('Weekly', weeklyCount.toString(), null, null, null,
-          weeklyList, weekDaysubList));
+      data.add(new MyTask('Weekly', weeklyCount.toString(), null, null, null,null,
+          weeklyList,null, weekDaysubList));
       // subList.clear();
     }
 
@@ -259,8 +262,8 @@ class NoteListState extends State<NoteList> {
         monthDaysubList.add(
             MyTask(monthList[i].title, monthList[i].description, monthList[i]));
       }
-      data.add(new MyTask('Weekly', monthlyCount.toString(), null, null, null,
-          weeklyList, monthDaysubList));
+      data.add(new MyTask('Monthly', monthlyCount.toString(), null, null, null, null, null,
+          monthList, monthDaysubList));
       // subList.clear();
     }
 

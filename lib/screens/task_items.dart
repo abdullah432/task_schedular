@@ -99,6 +99,14 @@ class TaskItemState extends State<TaskItem> {
         dataList = task.nexdayData;
         selectedDate = DateTime(now.year, now.month, now.day + 2);
         break;
+      case 'Weekly':
+        dataList = task.weeklyData;
+        selectedDate = DateTime(now.year, now.month, now.day + 7);
+        break;
+      case 'Monthly':
+        dataList = task.monthlyData;
+        selectedDate = DateTime(now.year, now.month + 1, 0);
+        break;
     }
     setState(() {
       buildPdfDoument();

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:task_scheduler/models/MyTask.dart';
 import 'package:task_scheduler/models/SeondTask.dart';
 import 'package:task_scheduler/models/note.dart';
 import 'package:task_scheduler/screens/note_detail.dart';
 import 'package:task_scheduler/screens/second_task_list.dart';
-import 'package:task_scheduler/screens/task_items.dart';
 import 'package:task_scheduler/utils/database_helper.dart';
 
 class SecondPage extends StatefulWidget {
