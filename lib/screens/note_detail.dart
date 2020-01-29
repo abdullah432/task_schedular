@@ -462,16 +462,17 @@ class NoteDetailState extends State<NoteDetail> {
       this.note.location = '.......';
     }
 
-    // debugPrint('save');
-    // debugPrint(note.title);
-    // debugPrint(note.description);
-    // debugPrint(note.attendence);
-    // debugPrint(note.startdate);
-    // debugPrint(note.enddate);
-    // debugPrint(note.starttime);
-    // debugPrint(note.duetime);
-    // debugPrint(note.privacy);
-    // debugPrint('after save');
+    debugPrint('save');
+    debugPrint(note.title);
+    debugPrint(note.description);
+    debugPrint(note.attendence);
+    debugPrint(note.startdate);
+    debugPrint(note.enddate);
+    debugPrint(note.starttime);
+    debugPrint(note.duetime);
+    debugPrint(note.privacy);
+    debugPrint(note.getNote);
+    debugPrint('after save');
 
     int result;
     //   note.date = DateFormat.yMMMd().format(DateTime.now());
@@ -557,16 +558,16 @@ class NoteDetailState extends State<NoteDetail> {
 
   //assign dropdown and date values because may be user leave it default
   void assignDefaultValues() {
-    debugPrint('title: ' + selectedTitle);
-    debugPrint('start: ' + startDate.toString());
-    debugPrint('end: ' + endDate.toString());
+    // debugPrint('title: ' + selectedTitle);
+    // debugPrint('start: ' + startDate.toString());
+    // debugPrint('end: ' + endDate.toString());
     this.note.title = selectedTitle;
     this.note.startDate = startDate.toString();
     this.note.endDate = endDate.toString();
     this.note.privacy = selectedPrivacy;
     this.note.setStartTime = starttime;
     this.note.setDueTime = duetime;
-    
+    this.note.setNote = '';
   }
 
   void setPreviousValues() {

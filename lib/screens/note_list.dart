@@ -69,7 +69,7 @@ class NoteListState extends State<NoteList> {
               ),
               onPressed: () {
                 navigateToDetail(
-                    Note('', '', '', '', '', '', '', '', ''), 'Add Task');
+                    Note('', '', '', '', '', '', '', '', '', ''), 'Add Task');
               }),
         ),
       ),
@@ -205,7 +205,7 @@ class NoteListState extends State<NoteList> {
     List<MyTask> monthDaysubList = List();
 
     if (todayCount == 0) {
-      data.add(new MyTask('Today', todayCount.toString(), null));
+      // data.add(new MyTask('Today', todayCount.toString(), null));
     } else {
       for (int i = 0; i < todayCount; i++) {
         todaysubList.add(
@@ -217,7 +217,7 @@ class NoteListState extends State<NoteList> {
     }
 
     if (tommoroCount == 0) {
-      data.add(new MyTask('Tommorow', tommoroCount.toString()));
+      // data.add(new MyTask('Tommorow', tommoroCount.toString()));
     } else {
       for (int i = 0; i < tommoroCount; i++) {
         tommorowsubList.add(MyTask(
@@ -229,7 +229,7 @@ class NoteListState extends State<NoteList> {
     }
 
     if (dayAfterTommoroCount == 0) {
-      data.add(new MyTask('Next Day', dayAfterTommoroCount.toString()));
+      // data.add(new MyTask('Next Day', dayAfterTommoroCount.toString()));
     } else {
       for (int i = 0; i < dayAfterTommoroCount; i++) {
         nextDaysubList.add(MyTask(dayAfterTommoroList[i].title,
@@ -241,7 +241,7 @@ class NoteListState extends State<NoteList> {
     }
 
     if (weeklyCount == 0) {
-      data.add(new MyTask('Weekly', weeklyCount.toString()));
+      // data.add(new MyTask('Weekly', weeklyCount.toString()));
     } else {
       for (int i = 0; i < weeklyCount; i++) {
         weekDaysubList.add(MyTask(
@@ -253,7 +253,7 @@ class NoteListState extends State<NoteList> {
     }
 
     if (monthlyCount == 0) {
-      data.add(new MyTask('Monthly', monthlyCount.toString()));
+      // data.add(new MyTask('Monthly', monthlyCount.toString()));
     } else {
       for (int i = 0; i < monthlyCount; i++) {
         monthDaysubList.add(

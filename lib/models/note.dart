@@ -9,11 +9,12 @@ class Note {
   String _starttime;
   String _duetime;
   String _attendence;
+  String _note;
 
   Note(this._title, this._startdate, this._enddate,
-      [this._location, this._description, this._privacy, this._starttime, this._duetime, this._attendence]);
+      [this._location, this._description, this._privacy, this._starttime, this._duetime, this._attendence, this._note]);
   Note.withID(this._title, this._startdate, this._enddate,
-      [this._location, this._description, this._privacy, this._starttime, this._duetime, this._attendence]);
+      [this._location, this._description, this._privacy, this._starttime, this._duetime, this._attendence, this._note]);
 
   int get id => this._id;
   String get title => this._title;
@@ -25,6 +26,7 @@ class Note {
   String get starttime => this._starttime;
   String get duetime => this._duetime;
   String get attendence => this._attendence;
+  String get getNote => this._note;
 
   set title(String newTitle) {
     if (title.length <= 255) this._title = newTitle;
@@ -62,6 +64,10 @@ class Note {
     this._attendence = newValue;
   }
 
+  set setNote(String newValue) {
+    this._note = newValue;
+  }
+
   //SQLFlite only get and return value in form of map
 
   //Convert Note object to Map object
@@ -78,6 +84,7 @@ class Note {
     map['starttime'] = _starttime;
     map['duetime'] = _duetime;
     map['attendence'] = _attendence;
+    map['note'] = _note;
 
     return map;
   }
@@ -94,5 +101,6 @@ class Note {
     _starttime = map['starttime'];
     _duetime = map['duetime'];
     _attendence = map['attendence'];
+    _note = map['note'];
   }
 }

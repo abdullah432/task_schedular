@@ -60,7 +60,7 @@ class SecondPageState extends State<SecondPage> {
               ),
               onPressed: () {
                 navigateToDetail(
-                    Note('', '', '', '', '', '', '', '',''), 'Add Task');
+                    Note('', '', '', '', '', '', '', '','',''), 'Add Task');
               }),
         ),
       ),
@@ -146,36 +146,37 @@ class SecondPageState extends State<SecondPage> {
     List<SecondTask> visitssubList = List();
 
     if (callonsMettingCount == 0) {
-      data.add(new SecondTask('Call Ons + Metting', callonsMettingCount.toString(), null, ''));
+      // data.add(new SecondTask('Call Ons + Metting', callonsMettingCount.toString(), null, ''));
     } 
     else {
       for (int i = 0; i < callonsMettingCount; i++) {
+        debugPrint('callons: '+callonsMettingList[i].title);
         callonMettingsubList.add(
-            SecondTask(callonsMettingList[i].title, callonsMettingList[i].description, callonsMettingList[i], callonsMettingList[i].startdate));
+            SecondTask(callonsMettingList[i].title, callonsMettingList[i].description, callonsMettingList[i], callonsMettingList[i].startdate, callonsMettingList[i].getNote));
       }
-      data.add(new SecondTask('Call Ons + Metting', callonsMettingCount.toString(), null, '', callonMettingsubList));
+      data.add(new SecondTask('Call Ons + Metting', callonsMettingCount.toString(), null, '','', callonMettingsubList));
       // subList.clear();
     }
 
     if (conferenceListCount == 0) {
-      data.add(new SecondTask('Conference', conferenceListCount.toString(), null, ''));
+      // data.add(new SecondTask('Conference', conferenceListCount.toString(), null, ''));
     } else {
       for (int i = 0; i < conferenceListCount; i++) {
         conferencesubList.add(SecondTask(
-            conferenceList[i].title, conferenceList[i].description, conferenceList[i], conferenceList[i].startdate));
+            conferenceList[i].title, conferenceList[i].description, conferenceList[i], conferenceList[i].startdate, conferenceList[i].getNote));
       }
-      data.add(new SecondTask('Conferences', conferenceListCount.toString(), null, '', conferencesubList));
+      data.add(new SecondTask('Conferences', conferenceListCount.toString(), null, '','', conferencesubList));
       // subList.clear();
     }
 
     if (visitsListCount == 0) {
-      data.add(new SecondTask('Visit', visitsListCount.toString(), null, ''));
+      // data.add(new SecondTask('Visit', visitsListCount.toString(), null, ''));
     } else {
       for (int i = 0; i < visitsListCount; i++) {
         visitssubList.add(SecondTask(visitsList[i].title,
-            visitsList[i].description, visitsList[i], visitsList[i].startdate));
+            visitsList[i].description, visitsList[i], visitsList[i].startdate, visitsList[i].getNote));
       }
-      data.add(new SecondTask('Visits', visitsListCount.toString(), null, '', visitssubList));
+      data.add(new SecondTask('Visits', visitsListCount.toString(), null, '','', visitssubList));
       // subList.clear();
     }
   }
