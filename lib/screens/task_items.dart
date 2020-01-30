@@ -32,6 +32,8 @@ class TaskItemState extends State<TaskItem> {
   DateTime selectedDate;
 
   DateTime currentTime;
+  DateTime subListDate;
+  String date;
 
   @override
   void initState() {
@@ -40,6 +42,12 @@ class TaskItemState extends State<TaskItem> {
   }
 
   Widget _buildTiles(MyTask task) {
+    if (task.note != null) {
+      DateTime datetime = DateTime.parse(task.note.startdate);
+      date = formatDate(datetime, [dd, ' ', MM, ' ', yyyy]);
+    } else
+      date = '';
+
     if (task.children.isEmpty)
       return ListTile(
         title: Text(task.title),
@@ -49,6 +57,7 @@ class TaskItemState extends State<TaskItem> {
           debugPrint(task.note.description);
           navigateToDetail(task.note, 'Edit Task');
         },
+        trailing: Text(date),
       );
     return ExpansionTile(
       key: PageStorageKey<MyTask>(task),

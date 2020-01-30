@@ -22,6 +22,11 @@ class NoteListState extends State<NoteList> {
   DateTime todayDate;
   DateTime tommoroDate;
   DateTime dayAfterTommoro;
+  DateTime nextday1;
+  DateTime nextday2;
+  DateTime nextday3;
+  DateTime nextday4;
+  DateTime nextday5;
   DateTime weeklyDate;
   DateTime monthDate;
   //list of dates
@@ -35,6 +40,7 @@ class NoteListState extends State<NoteList> {
   int dayAfterTommoroCount = 0;
   int weeklyCount = 0;
   int monthlyCount = 0;
+  // int othersTaskCount = 0;
   //no of days in month
   DateTime noOfDays;
 
@@ -43,6 +49,11 @@ class NoteListState extends State<NoteList> {
     todayDate = DateTime(now.year, now.month, now.day);
     tommoroDate = DateTime(now.year, now.month, now.day + 1);
     dayAfterTommoro = DateTime(now.year, now.month, now.day + 2);
+    nextday1 = DateTime(now.year, now.month, now.day + 3);
+    nextday2 = DateTime(now.year, now.month, now.day + 4);
+    nextday3 = DateTime(now.year, now.month, now.day + 5);
+    nextday4 = DateTime(now.year, now.month, now.day + 6);
+    nextday5 = DateTime(now.year, now.month, now.day + 7);
     weeklyDate = DateTime(now.year, now.month, now.day + 7);
     monthDate = DateTime(now.year, now.month + 1, now.day + 30);
     debugPrint('lastdateofmonth: '+monthDate.toString());
@@ -134,7 +145,7 @@ class NoteListState extends State<NoteList> {
     List<DateTime> between = List();
 
     for (int i = 0; i < noteList.length; i++) {
-      debugPrint('run: '+i.toString());
+      // debugPrint('run: '+i.toString());
       // debugPrint('start of dates $i: '+(noteList[i].startdate).toString());
       // debugPrint('end of dates $i: '+(noteList[i].enddate).toString());
       // if (now.compareTo())
@@ -147,56 +158,75 @@ class NoteListState extends State<NoteList> {
       // }
 
       //first check startdate and enddate is same or not, if same then add to today list
-      debugPrint('todayDAte: '+startDate.toString());
-      debugPrint('todayDAte: '+endDate.toString());
+      // debugPrint('todayDAte: '+startDate.toString());
+      // debugPrint('todayDAte: '+endDate.toString());
       DateTime t = DateTime(now.year, now.month, now.day);
       DateTime s = DateTime(startDate.year, startDate.month, startDate.day);
       DateTime e = DateTime(endDate.year, endDate.month, endDate.day);
+      // DateTime c = DateTime(endDate.year, endDate.month, endDate.day + 3);
+
+      // final dif = c.difference(e).inDays;
+      // debugPrint('Diff: '+dif.toString());
+
+
       if (t.compareTo(e) == 0) {
         todayList.add(noteList[i]);
-        debugPrint('today');
+        weeklyList.add(noteList[i]);
+        // debugPrint('today');
       } else if (s.compareTo(e) == 0) {
-        debugPrint('not today');
+        // debugPrint('not today');
         //get number of days between each task
         final days = endDate.difference(startDate).inDays;
         // debugPrint('Days: '+(days + 1).toString());
-        debugPrint('days' + days.toString());
+        // debugPrint('days' + days.toString());
         //all dates between startDate and endDate
-        for (int j = 0; j <= days; j++) {
-          between.add(
-              DateTime(startDate.year, startDate.month, startDate.day + j));
-          debugPrint('Date: ' + between[j].toString());
-        }
+        // for (int j = 0; j <= days; j++) {
+        //   between.add(
+        //       DateTime(startDate.year, startDate.month, startDate.day + j));
+        //   // debugPrint('Date: ' + between[j].toString());
+        // }
 
-        for (var b in between) {
-          // debugPrint('b: '+b.toString());
-          // debugPrint('nextday: '+dayAfterTommoro.toString());
+        DateTime b = DateTime(startDate.year, startDate.month, startDate.day);
+
+        // for (var b in between) {
+        //   // debugPrint('b: '+b.toString());
+        //   // debugPrint('nextday: '+dayAfterTommoro.toString());
           if (todayDate.compareTo(b) == 0) {
             todayList.add(noteList[i]);
+            weeklyList.add(noteList[i]);
           } else if (tommoroDate.compareTo(b) == 0) {
             tommoroList.add(noteList[i]);
+            weeklyList.add(noteList[i]);
             // debugPrint('tommorodate: ' + tommoroDate.toString());
             // debugPrint('bdate: ' + tommoroDate.toString());
           } else if (dayAfterTommoro.compareTo(b) == 0) {
             dayAfterTommoroList.add(noteList[i]);
-          } else if (weeklyDate.compareTo(b) == 0) {
             weeklyList.add(noteList[i]);
-          } else if (monthDate.compareTo(b) == 0) {
-            monthList.add(noteList[i]);
-          }
-        }
+          } else if (nextday1.compareTo(b) == 0 || nextday2.compareTo(b) == 0 || nextday3.compareTo(b) == 0 || nextday4.compareTo(b) == 0 || nextday5.compareTo(b) == 0) {
+            // int dif = b.difference(s).inDays;
+            // if (dif > 2 && dif <=7){
+            //   weeklyList.add(noteList[i]);
+            // } else if (dif > 7 && dif <= 30 ){
+            //   monthList.add(noteList[i]);
+            // }
+            weeklyList.add(noteList[i]);
+          } 
+          // else if (monthDate.compareTo(b) == 0) {
+          //   monthList.add(noteList[i]);
+          // }
+        // }
         between.clear();
       }else {
-        debugPrint('not today');
+        debugPrint('not same today');
         //get number of days between each task
         final days = endDate.difference(startDate).inDays;
         // debugPrint('Days: '+(days + 1).toString());
-        debugPrint('days' + days.toString());
+        // debugPrint('days' + days.toString());
         //all dates between startDate and endDate
         for (int j = 0; j <= days + 1; j++) {
           between.add(
               DateTime(startDate.year, startDate.month, startDate.day + j));
-          debugPrint('Date: ' + between[j].toString());
+          // debugPrint('Date: ' + between[j].toString());
         }
 
         for (var b in between) {
@@ -210,11 +240,16 @@ class NoteListState extends State<NoteList> {
             // debugPrint('bdate: ' + tommoroDate.toString());
           } else if (dayAfterTommoro.compareTo(b) == 0) {
             dayAfterTommoroList.add(noteList[i]);
-          } else if (weeklyDate.compareTo(b) == 0) {
+          } else if (nextday1.compareTo(b) == 0 || nextday2.compareTo(b) == 0 || nextday3.compareTo(b) == 0 || nextday4.compareTo(b) == 0 || nextday5.compareTo(b) == 0) {
+            // int dif = b.difference(s).inDays;
+            // if (dif > 2 && dif <=7){
+            //   weeklyList.add(noteList[i]);
+            // } else if (dif > 7 && dif <= 30 ){
+            //   monthList.add(noteList[i]);
+            // }
             weeklyList.add(noteList[i]);
-          } else if (monthDate.compareTo(b) == 0) {
-            monthList.add(noteList[i]);
-          }
+            break;
+          } 
         }
         between.clear();
       }
@@ -227,7 +262,7 @@ class NoteListState extends State<NoteList> {
     tommoroCount = tommoroList.length;
     dayAfterTommoroCount = dayAfterTommoroList.length;
     weeklyCount = weeklyList.length;
-    monthlyCount = monthList.length;
+    // monthlyCount = monthList.length;
 
     // assign data to expandable list
     assignDataToExpandable();
@@ -238,7 +273,7 @@ class NoteListState extends State<NoteList> {
     List<MyTask> tommorowsubList = List();
     List<MyTask> nextDaysubList = List();
     List<MyTask> weekDaysubList = List();
-    List<MyTask> monthDaysubList = List();
+    // List<MyTask> monthDaysubList = List();
 
     if (todayCount == 0) {
       // data.add(new MyTask('Today', todayCount.toString(), null));
@@ -286,19 +321,20 @@ class NoteListState extends State<NoteList> {
       data.add(new MyTask('Weekly', weeklyCount.toString(), null, null, null,null,
           weeklyList,null, weekDaysubList));
       // subList.clear();
+      debugPrint('Weekcount'+weeklyCount.toString());
     }
 
-    if (monthlyCount == 0) {
-      // data.add(new MyTask('Monthly', monthlyCount.toString()));
-    } else {
-      for (int i = 0; i < monthlyCount; i++) {
-        monthDaysubList.add(
-            MyTask(monthList[i].title, monthList[i].description, monthList[i]));
-      }
-      data.add(new MyTask('Monthly', monthlyCount.toString(), null, null, null, null, null,
-          monthList, monthDaysubList));
-      // subList.clear();
-    }
+    // if (monthlyCount == 0) {
+    //   // data.add(new MyTask('Monthly', monthlyCount.toString()));
+    // } else {
+    //   for (int i = 0; i < monthlyCount; i++) {
+    //     monthDaysubList.add(
+    //         MyTask(monthList[i].title, monthList[i].description, monthList[i]));
+    //   }
+    //   data.add(new MyTask('Monthly', monthlyCount.toString(), null, null, null, null, null,
+    //       monthList, monthDaysubList));
+    //   // subList.clear();
+    // }
 
     // data = <MyTask>[
     //   // for (int i=0; i<todayCount; i++) {
